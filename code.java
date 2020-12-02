@@ -1,7 +1,6 @@
 import java.util.*;
 import java.io.*;
 import java.math.*;
-import java.util.Random;
 
 /**
  * Auto-generated code below aims at helping you parse
@@ -11,16 +10,15 @@ class Player {
 
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
-        Random r = new Random();
 
-        String[][] map = new String[30][30];
-        for(int i = 0 ; i < 30 ; i++){
+        String[][] map = new String[30][20];
+        for(int i = 0 ; i < 20 ; i++){
             for(int j = 0 ; j < 30 ; j++){
                 map[j][i] = "-";
             }
         }
         
-        String dont_direction = "LEFT";
+        String direction = "LEFT";
 
         // game loop
         while (true) {
@@ -29,7 +27,6 @@ class Player {
             System.err.println("tous "+N+" moi "+P);
             int Xmoi = -1;
             int Ymoi = -1;
-            String direction = "LEFT";
             for (int i = 0; i < N; i++) {
                 int X0 = in.nextInt(); // starting X coordinate of lightcycle (or -1)
                 int Y0 = in.nextInt(); // starting Y coordinate of lightcycle (or -1)
@@ -39,8 +36,8 @@ class Player {
                 map[X1][Y1] = ""+i;
                 if(i == P){
                     System.err.println("c'est moi" + i);
-                    Xmoi = X0;
-                    Ymoi = Y0;
+                    Xmoi = X1;
+                    Ymoi = Y1;
                     System.err.println("0:"+X0+" "+Y0);
                     System.err.println("1:"+X1+" "+Y1);
                 }
@@ -55,40 +52,108 @@ class Player {
             // To debug: System.err.println("Debug messages...");
 
 
-            while(direction == dont_direction){
-                
-                int rand = r.nextInt(3);
+            while(!direction_possilbe(map, direction, Xmoi, Ymoi)){
 
-                if(rand == 0){
+                if(direction == "LEFT"){
                     direction = "RIGHT";
-                }else if(rand == 1){
+                }else if(direction == "RIGHT"){
                     direction = "DOWN";
-                }else if(rand == 2){
-                    direction = "LEFT";
-                }else if(rand == 3){
+                }else if(direction == "DOWN"){
                     direction = "UP";
+                }else if(direction == "UP"){
+                    direction = "LEFT";
                 }
+                
             }
             
-            System.err.println("direction : "+direction);
-            if(direction == "LEFT"){
-                dont_direction = "RIGHT";
-            }else if(direction == "RIGHT"){
-                dont_direction = "LEFT";
-            }else if(direction == "DOWN"){
-                dont_direction = "UP";
-            }else if(direction == "UP"){
-                dont_direction = "DOWN";
-            }
+            //System.err.println("direction : "+direction);
 
-            for(int i = 0 ; i < 30 ; i++){
-                for(int j = 0 ; j < 30 ; j++){
-                    System.err.print(map[j][i] + " ");
-                }
-                System.err.println("");
-            }
+            //affiche_map(map);
             
             System.out.println(direction); // A single line with UP, DOWN, LEFT or RIGHT
         }
     }
+
+    private static void affiche_map(String[][] map){
+        for(int i = 0 ; i < 20 ; i++){
+            for(int j = 0 ; j < 30 ; j++){
+                System.err.print(map[j][i] + " ");
+            }
+            System.err.println("");
+        }
+    }
+
+    private static boolean direction_possilbe(String[][] map, String direction, int Xmoi, int Ymoi){
+
+        affiche_map(map);
+        System.err.println("direction : "+direction);
+        System.err.println("Xmoi : "+Xmoi);
+        System.err.println("Ymoi : "+Ymoi);
+
+        if(direction == "LEFT"){
+            if(Xmoi != 0){
+                if(map[Xmoi-1][Ymoi] == "-"){
+                    System.err.println("je peux aller à " + direction);
+                    return true;
+                }else{
+                    System.err.println("je peux pas aller à " + direction);
+                    return false;
+            }
+            }else{
+                System.err.println("je peux pas aller à " + direction);
+                return false;
+            }
+        }
+
+        if(direction == "RIGHT"){
+            if(Xmoi != 29){
+                if(map[Xmoi+1][Ymoi] == "-"){
+                    System.err.println("je peux aller à " + direction);
+                    return true;
+                }else{
+                    System.err.println("je peux pas aller à " + direction);
+                    return false;
+            }
+            }else{
+                System.err.println("je peux pas aller à " + direction);
+                return false;
+            }
+        }
+
+        if(direction == "UP"){
+            if(Ymoi != 0){
+                if(map[Xmoi][Ymoi-1] == "-"){
+                    System.err.println("je peux aller à " + direction);
+                    return true;
+                }else{
+                    System.err.println("je peux pas aller à " + direction);
+                    return false;
+            }
+            }else{
+                System.err.println("je peux pas aller à " + direction);
+                return false;
+            }
+        }
+
+        if(direction == "DOWN"){
+            if(Ymoi != 19){
+                if(map[Xmoi][Ymoi+1] == "-"){
+                    System.err.println("je peux aller à " + direction);
+                    return true;
+                }else{
+                    System.err.println("je peux pas aller à " + direction);
+                    return false;
+            }
+            }else{
+                System.err.println("je peux pas aller à " + direction);
+                return false;
+            }
+        }
+
+        return false;
+    }
+}
+
+class Choix_Direction {
+
 }
