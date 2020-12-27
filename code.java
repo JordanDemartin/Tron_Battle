@@ -12,6 +12,10 @@ class Player {
 
         int x_joueur[] = new int[4];
         int y_joueur[] = new int[4];
+        boolean dead[] = new boolean[4];
+        for(int i = 0; i < 4; i++){
+            dead[i] = false;
+        }
 
         char[][] map = Map_Fonctions.initialisation_map(30,20);
 
@@ -30,19 +34,27 @@ class Player {
                 int X1 = in.nextInt(); // starting X coordinate of lightcycle (can be the same as X0 if you play before this player)
                 int Y1 = in.nextInt(); // starting Y coordinate of lightcycle (can be the same as Y0 if you play before this player)
 
-                map[X0][Y0] = Character.forDigit(i,10);
-                map[X1][Y1] = Character.forDigit(i,10);
+                if(X0 != -1 && Y0 != -1 && X1 != -1 && Y1 != -1){ 
+                    map[X0][Y0] = Character.forDigit(i,10);
+                    map[X1][Y1] = Character.forDigit(i,10);
+                }else{
+                    if(!dead[i]){
+                        Map_Fonctions.delete_player(map, Character.forDigit(i,10));
+                        dead[i] = true;
+                    }
+                }
                 x_joueur[i] = X1;
                 y_joueur[i] = Y1;
             }
             for(int i = N; i < 4; i++){
                 x_joueur[i] = -1;
                 y_joueur[i] = -1;
+                dead[i] = false;
             }
 
             //affiche la position de chaque joueur
             for(int i = 0; i < 4; i++){
-                System.err.println("tête du joueur "+ i +" : x="+x_joueur[i]+" y="+y_joueur[i]);
+                System.err.println("tête du joueur "+ i +" : x="+x_joueur[i]+" y="+y_joueur[i] + ", mort?"+dead[i]);
             }
 
             current = new Noeud( map, x_joueur, y_joueur, 10, P, x_joueur[P], y_joueur[P], 0);
@@ -132,6 +144,16 @@ class Map_Fonctions{
         }
 
         return copy;
+    }
+
+    public static void delete_player(char[][]map, char player){
+        for(int i = 0 ; i < 20 ; i++){
+            for(int j = 0 ; j < 30 ; j++){
+                if(map[j][i] == player){
+                    map[j][i] = '-';
+                }
+            }
+        }
     }
 
 }
