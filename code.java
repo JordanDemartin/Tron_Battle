@@ -5,8 +5,6 @@ import java.math.*;
 
 class Player {
 
-    
-
     public static void main(String args[]) {
         Scanner in = new Scanner(System.in);
 
@@ -18,8 +16,6 @@ class Player {
         }
 
         char[][] map = Map_Fonctions.initialisation_map(30,20);
-
-        
 
         // game loop
         while (true) {
@@ -57,51 +53,52 @@ class Player {
                 System.err.println("tête du joueur "+ i +" : x="+x_joueur[i]+" y="+y_joueur[i] + ", mort?"+dead[i]);
             }
 
-            current = new Noeud( map, x_joueur, y_joueur, 8, P, P, x_joueur[P], y_joueur[P], 0);
+            current = new Noeud( map, x_joueur, y_joueur, 10, P, x_joueur[P], y_joueur[P], 0);
                
 
 
             int score_max = -100000;
             
             int temp;
-            System.err.println("gauche : " + current.gauche);
+
             if(current.gauche != null){
                 temp = current.gauche.calcule_score();//score gauche
-                System.err.println("score gauche : " + temp);
+
                 if( temp > score_max ){
                     score_max = temp;
                     direction = "LEFT";
                 }
             }
-            System.err.println("droite : " + current.droite);
+
             if(current.droite != null){
                 temp = current.droite.calcule_score();//score droite
-                System.err.println("score droite : " + temp);
+
                 if( temp > score_max ){
                     score_max = temp;
                     direction = "RIGHT";
                 }
             }
-            System.err.println("haut : " + current.haut);
+
             if(current.haut != null){
                 temp = current.haut.calcule_score();//score haut
-                System.err.println("score haut : " + temp);
+
                 if( temp > score_max ){
                     score_max = temp;
                     direction = "UP";
                 }
             }
-            System.err.println("bas : " + current.bas);
+
             if(current.bas != null){
                 temp = current.bas.calcule_score();//score bas
-                System.err.println("score bas : " + temp);
+
                 if( temp > score_max ){
                     score_max = temp;
                     direction = "DOWN";
                 }
             }
             
-            //Map_Fonctions.affiche_map(map);
+            //affiche la map
+            Map_Fonctions.affiche_map(map);
 
             System.out.println(direction);
         }
@@ -170,27 +167,23 @@ class Noeud{
     private int depth;
     private int joueur_concerner;
     private int tour;
-    private int joueur_moi;
 
-    public Noeud(char[][] map, int[] x_joueur, int[] y_joueur, int depth, int joueur_concerner, int joueur_moi, int x_move, int y_move, int tour){
-        /*if(tour == 0){
+    public Noeud(char[][] map, int[] x_joueur, int[] y_joueur, int depth, int joueur_concerner, int x_move, int y_move, int tour){
+        if(tour == 0){
             this.map = Map_Fonctions.copy_map(map);
         }else{
             this.map = map;
-        }*/
-        this.map = Map_Fonctions.copy_map(map);
+        }
+
         this.x_joueur = x_joueur.clone();
         this.y_joueur = y_joueur.clone();
         this.depth = depth;
         this.joueur_concerner = joueur_concerner;
-        this.joueur_moi = joueur_moi;
         this.tour = tour;
         
         this.map[x_move][y_move] = Character.forDigit(joueur_concerner,10);
         this.x_joueur[this.joueur_concerner] = x_move;
         this.y_joueur[this.joueur_concerner] = y_move;
-
-        //Map_Fonctions.affiche_map(this.map);
 
         if(this.depth > 0){
             this.create_childs();
@@ -199,42 +192,25 @@ class Noeud{
 
     public void create_childs(){
         int nouveau_joueur_concerner = this.joueur_concerner;
-        if(tour != 0){
-            nouveau_joueur_concerner = (nouveau_joueur_concerner+1)%4;
-            while(this.x_joueur[nouveau_joueur_concerner] == -1){
-                nouveau_joueur_concerner = (nouveau_joueur_concerner+1)%4;
-            }
-        }
+
         if( this.x_joueur[nouveau_joueur_concerner] != 0 ){
             if( this.map[this.x_joueur[nouveau_joueur_concerner]-1][this.y_joueur[nouveau_joueur_concerner]] == '-'){
-                // if(depth == 10){
-                //     System.err.println("je créer un noeud droite, "+(this.x_joueur[nouveau_joueur_concerner]-1)+","+ this.y_joueur[nouveau_joueur_concerner]);
-                // }
-                this.gauche = new Noeud( this.map, this.x_joueur, this.y_joueur, this.depth-1, nouveau_joueur_concerner, this.joueur_moi, this.x_joueur[nouveau_joueur_concerner]-1, this.y_joueur[nouveau_joueur_concerner], this.tour+1);
+                this.gauche = new Noeud( this.map, this.x_joueur, this.y_joueur, this.depth-1, nouveau_joueur_concerner, this.x_joueur[nouveau_joueur_concerner]-1, this.y_joueur[nouveau_joueur_concerner], this.tour+1);
             }
         }
         if( this.x_joueur[nouveau_joueur_concerner] != 29 ){
             if( this.map[this.x_joueur[nouveau_joueur_concerner]+1][this.y_joueur[nouveau_joueur_concerner]] == '-'){
-                // if(depth == 10){
-                //     System.err.println("je créer un noeud droite, "+(this.x_joueur[nouveau_joueur_concerner]+1)+","+ this.y_joueur[nouveau_joueur_concerner]);
-                // }
-                this.droite = new Noeud( this.map, this.x_joueur, this.y_joueur, this.depth-1, nouveau_joueur_concerner, this.joueur_moi, this.x_joueur[nouveau_joueur_concerner]+1, this.y_joueur[nouveau_joueur_concerner], this.tour+1);
+                this.droite = new Noeud( this.map, this.x_joueur, this.y_joueur, this.depth-1, nouveau_joueur_concerner, this.x_joueur[nouveau_joueur_concerner]+1, this.y_joueur[nouveau_joueur_concerner], this.tour+1);
             }
         }
         if( this.y_joueur[nouveau_joueur_concerner] != 19 ){
             if( this.map[this.x_joueur[nouveau_joueur_concerner]][this.y_joueur[nouveau_joueur_concerner]+1] == '-'){
-                // if(depth == 10){
-                //     System.err.println("je créer un noeud droite, "+(this.x_joueur[nouveau_joueur_concerner])+","+ (this.y_joueur[nouveau_joueur_concerner]+1));
-                // }
-                this.bas = new Noeud( this.map, this.x_joueur, this.y_joueur, this.depth-1, nouveau_joueur_concerner, this.joueur_moi, this.x_joueur[nouveau_joueur_concerner], this.y_joueur[nouveau_joueur_concerner]+1, this.tour+1);
+                this.bas = new Noeud( this.map, this.x_joueur, this.y_joueur, this.depth-1, nouveau_joueur_concerner, this.x_joueur[nouveau_joueur_concerner], this.y_joueur[nouveau_joueur_concerner]+1, this.tour+1);
             }
         }
         if( this.y_joueur[nouveau_joueur_concerner] != 0 ){
             if( this.map[this.x_joueur[nouveau_joueur_concerner]][this.y_joueur[nouveau_joueur_concerner]-1] == '-'){
-                // if(depth == 10){
-                //     System.err.println("je créer un noeud droite, "+(this.x_joueur[nouveau_joueur_concerner])+","+ (this.y_joueur[nouveau_joueur_concerner]-1));
-                // }
-                this.haut = new Noeud( this.map, this.x_joueur, this.y_joueur, this.depth-1, nouveau_joueur_concerner, this.joueur_moi, this.x_joueur[nouveau_joueur_concerner], this.y_joueur[nouveau_joueur_concerner]-1, this.tour+1);
+                this.haut = new Noeud( this.map, this.x_joueur, this.y_joueur, this.depth-1, nouveau_joueur_concerner, this.x_joueur[nouveau_joueur_concerner], this.y_joueur[nouveau_joueur_concerner]-1, this.tour+1);
             }
         }
     }
@@ -247,9 +223,7 @@ class Noeud{
             return -10000;
         }
 
-        int score = 0;
-        
-        score = 1;
+        int score = 1;
 
         if(this.gauche!=null){
             score += gauche.calcule_score();
@@ -261,9 +235,6 @@ class Noeud{
             score += haut.calcule_score();
         }
         
-        if(this.joueur_concerner != this.joueur_moi){
-            score = score*-1;
-        }
         return score;
     }
 }
