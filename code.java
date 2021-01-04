@@ -45,7 +45,7 @@ class Player {
             for(int i = N; i < 4; i++){
                 x_joueur[i] = -1;
                 y_joueur[i] = -1;
-                dead[i] = false;
+                dead[i] = true;
             }
 
             //affiche la position de chaque joueur
